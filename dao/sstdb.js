@@ -11,3 +11,8 @@ const con = mysql.createPool({
 //     const query ='SELECT * FROM user_tbl where status=1'
 //     return con.promise().query(query);
 // }
+
+module.exports.login = (name)=>{
+  const query=`SELECT * FROM  user_tbl WHERE name='${name}'`
+  return con.promise().query(query);
+}
