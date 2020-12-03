@@ -1,6 +1,8 @@
 const express = require('express');
 const dao = require('../dao/sstdb');
+const { produceToken } = require('../security/token')
 const response = require('../config/response');
+
 
 module.exports.login = (req, res, next) => {
     const name = req.body.name
@@ -16,8 +18,11 @@ module.exports.login = (req, res, next) => {
                         return { password: v.password }
                     })
                     if (password[0].password === pwd) {
+                        const token = produceToken({ name, pwd })
+
                         return res.status(200).json(
                             response({
+                                payload: [{ name, token }],
                                 message: "login successfully",
                             })
                         )
@@ -28,12 +33,12 @@ module.exports.login = (req, res, next) => {
                             })
                         )
                     }
-                 }
+                }
             })
             .catch(err => {
+                console.log(err, 'inErr:')
                 return next({ status: 400, error: err })
             })
-
     } catch (error) {
         return next({ status: 500, error: error });
     }
